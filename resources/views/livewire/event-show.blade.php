@@ -2,8 +2,8 @@
     <section class="flex flex-col w-full">
         <div class="flex flex-col sm:flex-row shadow-md w-full">
             {{-- LHS image --}}
-            <div class="flex bg-{{$event->level->color}}-200 min-w-sm max-w-sm">
-                <div id="image" class="flex flex-col justify-center items-center p-2 my-auto">
+            <div class="flex bg-{{$event->level->color}}-200">
+                <div id="image" class="flex flex-col justify-center items-center p-2 my-auto w-64">
                     <x-dynamic-component :component="$event->type->name" :color="$event->level->color" />
 
                     <p class="flex font-bold text-center text-4xl text-{{$event->level->color}}-600 mt-4">{{$event->type->name}}</p>
@@ -27,7 +27,7 @@
 
                     {{-- creator info --}}
                     <div class="flex mx-auto items-center my-4">
-                        <img class="flex w-12 rounded-full ring ring-{{$event->level->color}}-400" src="{{$event->creator->getGravatarUrl()}}" alt="{{ $event->creator->name}}" />
+                        <img class="flex w-12 rounded-full ring ring-{{$event->level->color}}-400" src="https://eu.ui-avatars.com/api/?name=John+Doe" alt="{{ $event->creator->name}}" />
                         <h3 class="flex ml-4 text-2xl">
                             {{ $event->creator->name}} <span class="pl-2 text-{{$event->level->color}}-400">RL</span>
                         </h3>
@@ -80,18 +80,19 @@
             </p>
             <div class="flex flex-row justify-center items-center mt-8">
                 <span class="flex mr-2">You are</span>
-                @if($this->responded)
+                @if(!$this->responded)
+                <button wire:click.prevent="addResponder" class="flex bg-{{$event->level->color}}-200 py-2 px-4 text-{{$event->level->color}}-600 hover:text-white hover:bg-{{$event->level->color}}-600">
+                    <span>Not going</span>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="ml-2 h-6 w-6">
+                        <path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke-width="2" />
+                    </svg>
+                </button>
+                @elseif($this->responded)
                 <button wire:click.prevent="removeResponder" class="flex bg-{{$event->level->color}}-200 py-2 px-4 text-{{$event->level->color}}-600 hover:text-white hover:bg-{{$event->level->color}}-600">
                     <span>Going</span>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="ml-2 h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                </button>
-                @elseif(!$this->responded)
-                <button wire:click.prevent="addResponder" class="flex bg-{{$event->level->color}}-200 py-2 px-4 text-{{$event->level->color}}-600 hover:text-white hover:bg-{{$event->level->color}}-600">
-                    <span>Not going</span>
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="ml-2 h-6 w-6" ≈>
-                        <path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" stroke-width="2" /></svg>
                 </button>
                 @endif
             </div>

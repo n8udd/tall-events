@@ -104,15 +104,15 @@
 
         </div>
 
-        <div class="flex flex-col w-full">
+        <div class="flex flex-col w-full px-4 md:px-0">
 
             {{-- {{ $events->links() }} --}}
 
-            <div class="mt-4">
-                @foreach($events as $event)
-                <livewire:event-index :event="$event" />
-                @endforeach
-            </div>
+            {{-- <div class="mt-4"> --}}
+            @foreach($events as $event)
+            <livewire:event-index :event="$event" />
+            @endforeach
+            {{-- </div> --}}
 
             {{-- {{ $events->links() }} --}}
 
