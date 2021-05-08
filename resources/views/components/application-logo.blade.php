@@ -1,0 +1,1 @@
+<img src="https://res.cloudinary.com/tri-hards/image/upload/v1577193658/web-assets/tri-hards-logo_tj6uyx.svg" alt="Tri-Hards">
