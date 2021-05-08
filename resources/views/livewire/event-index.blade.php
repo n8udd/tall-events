@@ -1,11 +1,11 @@
-<section class="flex flex-col mb-6">
+<section class="flex flex-col mb-6 w-full">
     <div class="flex flex-col sm:flex-row shadow-md w-full">
-        <div id="image" class="flex flex-col bg-{{$event->level->color}}-200 min-w-sm max-w-sm justify-center items-center p-2">
+        <div id="image" class="flex flex-col bg-{{$event->level->color}}-200 md:max-w-sm justify-center items-center p-2">
             <x-dynamic-component :component="$event->type->name" :color="$event->level->color" />
             <p class="flex font-bold text-center text-4xl text-{{$event->level->color}}-600">{{$event->type->name}}</p>
         </div>
 
-        <div class="flex flex-col text-lg md:text-xl bg-white p-2 items-center md:items-start justify-evenly text-gray-700 md:w-3/4">
+        <div class="flex flex-col text-lg md:text-xl bg-white p-2 items-center  justify-evenly text-gray-700 w-full">
 
             <div class="flex flex-col items-center justify-center mx-auto text-center md:justify-start md:mb-4 md:mt-0">
                 <h1 class="flex text-2xl mt-4 px-4">{{ $event->title }}</h1>

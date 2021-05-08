@@ -18,9 +18,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with(['level', 'type', 'respondees'])->get(); // refactor to use queryscopes to reduce number of db calls
-        $levels = $events->sortBy('level.id')->pluck('level.name')->countBy();
-        return view('events.index', compact(['events', 'levels']));
+        return view('events.index');
     }
 
     /**

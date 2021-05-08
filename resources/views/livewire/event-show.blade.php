@@ -2,7 +2,7 @@
     <section class="flex flex-col w-full">
         <div class="flex flex-col sm:flex-row shadow-md w-full">
             {{-- LHS image --}}
-            <div class="flex bg-{{$event->level->color}}-200">
+            <div class="flex bg-{{$event->level->color}}-200 w-full">
                 <div id="image" class="flex flex-col justify-center items-center p-2 my-auto w-64">
                     <x-dynamic-component :component="$event->type->name" :color="$event->level->color" />
 
@@ -14,8 +14,8 @@
 
             <div class="flex flex-col text-lg text-gray-700 w-full ">
                 {{-- title and intro --}}
-                <div class="flex flex-col bg-white p-8 ">
-                    <div class="flex flex-col pb-4 mb-4 border-b-2 items-center justify-center text-center">
+                <div class="flex flex-col bg-white p-8 w-full">
+                    <div class="flex flex-col pb-4 mb-4 border-b-2 items-center justify-center text-center w-100">
                         <h1 class="flex text-4xl mb-4 text-center">
                             {{ $event->title }}
                         </h1>
@@ -27,7 +27,7 @@
 
                     {{-- creator info --}}
                     <div class="flex mx-auto items-center my-4">
-                        <img class="flex w-12 rounded-full ring ring-{{$event->level->color}}-400" src="https://eu.ui-avatars.com/api/?name=John+Doe" alt="{{ $event->creator->name}}" />
+                        <img class="flex w-12 rounded-full ring ring-{{$event->level->color}}-400" src="{{$event->creator->getGravatarUrl()}}" alt="{{ $event->creator->name}}" />
                         <h3 class="flex ml-4 text-2xl">
                             {{ $event->creator->name}} <span class="pl-2 text-{{$event->level->color}}-400">RL</span>
                         </h3>
