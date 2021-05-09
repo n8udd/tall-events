@@ -26,14 +26,14 @@ class EventsIndex extends Component
         $this->levels = Level::get()->pluck('id', 'name')->toArray();
         $this->types  = Type::get()->pluck('id', 'name')->toArray();
         // trying to set the correct filters on page refresh
-        $this->emit('queryStringUpdatedType', $this->type);
-        $this->emit('queryStringUpdatedLevel', $this->level);
     }
 
     public function render()
     {
         $levels = $this->levels;
         $types  = $this->types;
+        $level = $this->level;
+        $type  = $this->type;
 
         $events = Event::with(['level', 'type', 'respondees'])
             ->where('start_dt', '>', now())
@@ -44,18 +44,20 @@ class EventsIndex extends Component
                 return $query->where('type_id', $types[$this->type]);
             })
             ->orderBy('start_dt')
-            ->paginate(5);
+            ->simplePaginate(4);
 
-        return view('livewire.events-index', ['events' => $events, 'levels' => $levels, 'types' => $types]);
+        return view('livewire.events-index', ['events' => $events, 'levels' => $levels, 'types' => $types, 'level' => $level, 'type' => $type]);
     }
 
     public function queryStringUpdatedLevel($newLevel)
     {
         $this->level = $newLevel;
+        $this->resetPage();
     }
 
     public function queryStringUpdatedType($newType)
     {
         $this->type = $newType;
+        $this->resetPage();
     }
 }
