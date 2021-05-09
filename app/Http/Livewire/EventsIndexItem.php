@@ -6,7 +6,7 @@ use App\Models\Event;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
-class EventIndex extends Component
+class EventsIndexItem extends Component
 {
     public $event;
 
@@ -22,6 +22,6 @@ class EventIndex extends Component
 
     public function render()
     {
-        return view('livewire.event-index');
+        return view('livewire.events-index-item');
     }
 }

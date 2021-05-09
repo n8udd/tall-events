@@ -15,8 +15,8 @@ class EventUserSeeder extends Seeder
      */
     public function run()
     {
-        $event_id = collect(range(1, 25));
-        $user_id = collect(range(1, 10));
+        $event_id = collect(range(1, 50));
+        $user_id = collect(range(1, 11));
 
         $event_user = $user_id->crossJoin($event_id);
 
@@ -26,7 +26,7 @@ class EventUserSeeder extends Seeder
                 $user = User::find($combo[0]);
                 $event = Event::find($combo[1]);
 
-                $event->respondees()->save($user, ['attended' => rand(0, 1)]);
+                $event->respondees()->attach($user, ['attended' => rand(0, 1)]);
             }
         }
     }
