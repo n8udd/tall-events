@@ -2,19 +2,26 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\Type;
 use App\Models\User;
 use App\Models\Level;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use IndefiniteArticle\IndefiniteArticle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $dates = ['start_dt'];
+    protected $dates = [
+        'start_date',
+        'end_date',
+        'cancelled_at',
+        'deleted_at'
+    ];
+
+    protected $guarded = [];
 
     public function level()
     {
@@ -46,24 +53,23 @@ class Event extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function addResponder()
+    public function toggleResponse($user_id)
     {
-        $this->respondees()->attach(Auth::id());
+        $response = $this->respondees()->toggle($user_id);
+
+        return in_array($user_id, $response["attached"]);
     }
 
-    public function removeResponder()
+    public function toggleCancelled()
     {
-        $this->respondees()->detach(Auth::id());
+        $this->cancelled_at = $this->cancelled_at ? NULL : now();
+        $this->save();
     }
 
-    public function getStartDateAttribute()
+    public function toggleDeleted()
     {
-        return $this->start_dt->format('D jS M');
-    }
-
-    public function getStartTimeAttribute()
-    {
-        return $this->start_dt->format('H:i');
+        $this->delete();
+        return redirect(route('events.index'));
     }
 
     public function isBeingAttended(?User $user): bool
@@ -73,5 +79,15 @@ class Event extends Model
         }
 
         return $this->respondees()->where('user_id', $user->id)->exists();
+    }
+
+    public function getFormattedStartTime()
+    {
+        return Carbon::parse($this->start_time)->format('H:i');
+    }
+
+    public function getFormattedStartDate()
+    {
+        return Carbon::parse($this->start_date)->format('D jS M');
     }
 }

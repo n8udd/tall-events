@@ -31,7 +31,8 @@ class TypeSeeder extends Seeder
             'ride',
             'jeff',
             'walk',
-            'swim'
+            'swim',
+            'social',
         ];
     }
 }

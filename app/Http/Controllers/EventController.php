@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Type;
 use App\Models\Event;
-use App\Models\Level;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\EventRequest;
 
 class EventController extends Controller
 {
@@ -28,7 +25,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return view('events.create');
     }
 
     /**
@@ -37,9 +34,14 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EventRequest $request)
     {
-        //
+        // dd($request);
+        $event = Event::create($request->validated());
+
+        $event->respondees()->attach(auth()->id());
+
+        return redirect()->route('events.show', $event);
     }
 
     /**
@@ -50,7 +52,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event = Event::whereId($event->id)->with(['creator', 'level', 'type', 'respondees'])->withCount('respondees')->first();
+        $event = Event::whereId($event->id)->with(['creator', 'level', 'type', 'respondees'])->withCount('respondees')->firstOrFail();
         return view('events.show', compact('event'));
     }
 
@@ -62,7 +64,8 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        // dd($event);
+        return view('events.edit', ['event' => $event]);
     }
 
     /**
@@ -72,9 +75,10 @@ class EventController extends Controller
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(EventRequest $request, Event $event)
     {
-        //
+        $event->update($request->validated());
+        return redirect()->route('events.show', $event);
     }
 
     /**

@@ -23,16 +23,22 @@ class EventFactory extends Factory
      */
     public function definition()
     {
+        $dt = Carbon::now();
+        $key = array_rand($gender = ["gents", "ladies", "mixed"]);
         return [
             "uuid" => (string) Str::uuid(),
             "title" => $title = $this->faker->sentence(3),
             "description" => $title = $this->faker->sentence,
-            "type_id" => rand(1, 4),
-            "level_id" => rand(1, 4),
+            "type_id" => rand(1, 6),
+            "level_id" => rand(1, 3),
             "intro" => $this->faker->sentence(),
-            "start_dt" => $date = Carbon::now()->addDays(rand(1, 14))->addHours(rand(1, 6))->addMinutes(rand(1, 59)),
-            "end_dt" => NULL,
-            "creator_id" => 1,
+            "start_date" => $dt->addDays(rand(1, 28))->format('Y-m-d'),
+            "start_time" => $dt->format('H:i'),
+            "end_date" => NULL,
+            "end_time" => NULL,
+            "creator_id" => rand(1, 10),
+            "leader_led" => rand(0, 1),
+            "gender" => $gender[$key],
             "location" => $this->faker->streetName() . ", Exmouth",
             "slug" => Str::of($title)->slug('-'),
         ];

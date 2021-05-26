@@ -31,7 +31,7 @@ class LevelSeeder extends Seeder
             'easy' => 'green',
             'intermediate' => 'yellow',
             'hard' => 'red',
-            'social' => 'blue',
+            // 'social' => 'blue',
         ];
     }
 }
