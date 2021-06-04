@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Event;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class EventUserSeeder extends Seeder
 {
@@ -15,19 +16,21 @@ class EventUserSeeder extends Seeder
      */
     public function run()
     {
-        $event_id = collect(range(1, 50));
-        $user_id = collect(range(1, 11));
+        $event_ids = Event::pluck('id');
+        $user_ids  = User::pluck('id');
 
-        $event_user = $user_id->crossJoin($event_id);
+        $event_users = $user_ids->crossJoin($event_ids)->shuffle()->take(50);
 
-        foreach ($event_user as $combo) {
-            $add = rand(0, 1);
-            if ($add) {
-                $user = User::find($combo[0]);
-                $event = Event::find($combo[1]);
 
-                $event->respondees()->attach($user, ['attended' => rand(0, 1)]);
-            }
+
+
+        foreach ($event_users as $event_user) {
+            $data = [
+                'event_id' => $event_user[0],
+                'user_id' => $event_user[1],
+            ];
+
+            DB::table('event_user')->insertOrIgnore($data);
         }
     }
 }

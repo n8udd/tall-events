@@ -2,41 +2,22 @@
 
 namespace App\Http\Livewire\Events;
 
+use App\Http\Livewire\Events\traits\QueryString;
 use App\Models\Type;
-use App\Models\Event;
 use App\Models\Level;
 use Livewire\Component;
 
 class Filters extends Component
 {
-    public $level = 'all';
-    public $type = 'all';
-    public $search = '';
-    public $leaderLed;
-    public $me = FALSE;
-    public $gender = NULL;
-    public $events;
+    use QueryString;
+
     public $count;
+    const GENDERS = ['mixed', 'ladies', 'gents'];
 
     protected $listeners = [
-        'queryStringUpdatedLevel',
-        'queryStringUpdatedType',
-        'queryStringUpdatedLeaderLed',
-        'queryStringUpdatedGender',
-        'queryStringUpdatedMe',
-        'updatedCount',
+        'countUpdated',
+        'queryStringUpdated',
     ];
-
-    public function mount($level, $type, $search, $leaderLed, $count, $gender, $me)
-    {
-        $this->gender = $gender;
-        $this->level = $level;
-        $this->type = $type;
-        $this->search = $search;
-        $this->leaderLed = $leaderLed;
-        $this->me = $me;
-        $this->count = $count;
-    }
 
     public function render()
     {
@@ -47,18 +28,25 @@ class Filters extends Component
         ]);
     }
 
-    public function updatedCount($count)
+    public function countUpdated($count)
     {
         $this->count = $count;
     }
 
-    public function updatedSearch($search_string)
+    public function updatedSearch()
     {
-        if ($search_string > 3) {
-            $this->emit('queryStringUpdatedSearch', $search_string);
-        } else {
-            $this->emit('queryStringUpdatedSearch', '');
+        if (strlen($this->search) > 3) {
+            $this->emit('queryStringUpdated', [
+                'key' => 'search',
+                'value' => $this->search
+            ]);
         }
+        // else {
+        //     $this->emit('queryStringUpdated', [
+        //         'key' => 'search',
+        //         'value' => ''
+        //     ]);
+        // }
     }
 
     public function toggleType($newType)
@@ -69,12 +57,19 @@ class Filters extends Component
         } else {
             $setType = $newType;
         }
-        $this->emit('queryStringUpdatedType', $setType);
+
+        $this->emit('queryStringUpdated', [
+            'key' => 'type',
+            'value' => $setType
+        ]);
     }
 
     public function toggleMe(bool $newMe)
     {
-        $this->emit('queryStringUpdatedMe', $newMe);
+        $this->emit('queryStringUpdated', [
+            'key' => 'me',
+            'value' => $newMe
+        ]);
     }
 
 
@@ -86,70 +81,72 @@ class Filters extends Component
         } else {
             $setLevel = $newLevel;
         }
-        $this->emit('queryStringUpdatedLevel', $setLevel);
+        $this->emit('queryStringUpdated', [
+            'key' => 'level',
+            'value' => $setLevel
+        ]);
     }
 
     public function toggleLeaderLed($leaderLed = NULL)
     {
         $toSet = isset($leaderLed) ? (bool) $leaderLed : NULL;
-        $this->emit('queryStringUpdatedLeaderLed', $toSet);
+
+        $this->emit('queryStringUpdated', [
+            'key' => 'leaderLed',
+            'value' => $toSet
+        ]);
     }
 
     public function toggleGender($gender = NULL)
     {
-        // dd($gender);
-        if (in_array($gender, ['mixed', 'gents', 'ladies'])) {
-            $setGender = $gender;
-        } else {
-            $setGender = NULL;
-        }
+        $setGender = in_array($gender, SELF::GENDERS) ? $gender : NULL;
+
         $this->gender = $setGender;
-        $this->emit('queryStringUpdatedGender', $setGender);
-    }
-
-    public function queryStringUpdatedType($newType)
-    {
-        $this->type = $newType;
-    }
-
-    public function queryStringUpdatedLevel($newLevel)
-    {
-        $this->level = $newLevel;
-    }
-
-    public function queryStringUpdatedSearch($newSearch)
-    {
-        $this->search = $newSearch;
-    }
-
-    public function queryStringUpdatedLeaderLed($newLeaderLed)
-    {
-        $this->leaderLed = $newLeaderLed;
-    }
-
-    public function queryStringUpdatedGender($gender)
-    {
-        $this->gender = $gender;
-    }
-
-    public function queryStringUpdatedMe($me)
-    {
-        $this->me = $me;
+        $this->emit('queryStringUpdated', [
+            'key' => 'gender',
+            'value' => $setGender
+        ]);
     }
 
     public function resetFilters()
     {
-        $this->level = 'all';
-        $this->type = 'all';
-        $this->search = '';
-        $this->leaderLed = NULL;
-        $this->gender = NULL;
-        $this->me = FALSE;
-        $this->emit('queryStringUpdatedLevel', $this->level);
-        $this->emit('queryStringUpdatedType', $this->type);
-        $this->emit('queryStringUpdatedSearch', $this->search);
-        $this->emit('queryStringUpdatedLeaderLed', $this->leaderLed);
-        $this->emit('queryStringUpdatedGender', $this->gender);
-        $this->emit('queryStringUpdatedMe', $this->me);
+        $filters = [
+            [
+                'key' => 'level',
+                'value' => 'all'
+            ],
+            [
+                'key' => 'type',
+                'value' => 'all'
+            ],
+            [
+                'key' => 'search',
+                'value' => ''
+            ],
+            [
+                'key' => 'leaderLed',
+                'value' => NULL
+            ],
+            [
+                'key' => 'gender',
+                'value' => NULL
+            ],
+            [
+                'key' => 'me',
+                'value' => FALSE
+            ],
+        ];
+
+        foreach ($filters as $filter) {
+            $key = $filter['key'];
+            $value = $filter['value'];
+
+            $this->$key = $value;
+
+            $this->emit('queryStringUpdated', [
+                'key' => $key,
+                'value' => $value,
+            ]);
+        }
     }
 }

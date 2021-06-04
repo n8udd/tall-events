@@ -35,7 +35,8 @@ class CreateEventsTable extends Migration
             $table->enum('gender', ['ladies', 'gents', 'mixed'])->default('mixed');
             $table->dateTime('cancelled_at')->nullable();
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

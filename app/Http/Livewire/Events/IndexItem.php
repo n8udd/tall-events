@@ -21,16 +21,16 @@ class IndexItem extends Component
     public function mount(Event $event)
     {
         $this->event = $event;
-        $this->attending = $event->respondees->contains(Auth::user());
     }
 
     public function updateAttending($response)
     {
-        $this->attending = $response["attending"];
+        // $this->attending = $response["attending"];
     }
 
     public function render()
     {
+        $this->attending = $this->event->respondees->contains(Auth::user());
         return view('livewire.events.index-item');
     }
 }

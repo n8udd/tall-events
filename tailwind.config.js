@@ -35,9 +35,9 @@ module.exports = {
     },
 
     variants: {
-        extend: {
-            opacity: ['disabled'],
-        },
+        opacity: ['disabled', 'hover'],
+        backgroundColor: ['disabled', 'hover'],
+        textColor: ['disabled', 'hover'],
     },
 
     plugins: [

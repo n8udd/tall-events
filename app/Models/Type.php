@@ -16,6 +16,18 @@ class Type extends Model
         return $this->belongsTo(Event::class);
     }
 
+    public function interestedUsers()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            Interest::class,
+            'type_id',
+            'id',
+            'id',
+            'user_id'
+        );
+    }
+
     public function article()
     {
         return IndefiniteArticle::A($this);

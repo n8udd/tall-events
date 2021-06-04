@@ -15,18 +15,20 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory([
+        User::firstOrCreate([
             'name' => 'Nathan Budd',
             'email' => 'buddn07@gmail.com',
+        ], [
             'password' => Hash::make('password'),
-        ])->create();
+        ]);
 
-        User::factory([
+        User::firstOrCreate([
             'name' => 'Test User',
             'email' => 'test@test.com',
+        ], [
             'password' => Hash::make('password'),
-        ])->create();
+        ]);
 
-        User::factory()->count(8)->create();
+        User::factory()->count(User::SEED_COUNT - 2)->create();
     }
 }

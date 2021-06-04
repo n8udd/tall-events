@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\User;
+use App\Models\Invite;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InviteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +22,16 @@ Route::get('/', function () {
 });
 
 Route::resource('events', EventController::class)->middleware(['auth']);
+
+Route::get('events/{event}/invite', [InviteController::class, 'show'])->middleware('auth')->name('invite.show');
+
+Route::get('/me/invites', function () {
+    $user = User::find(auth()->id());
+    $invites = $user->openInvites();
+    return view('me.invites', compact('invites'));
+})
+    ->middleware('auth')
+    ->name('my.invites');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

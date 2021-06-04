@@ -4,91 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Mail\EventUpdatedMailable;
 use App\Http\Requests\EventRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+    }
+
     public function index()
     {
         return view('events.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('events.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(EventRequest $request)
     {
-        // dd($request);
         $event = Event::create($request->validated());
-
         $event->respondees()->attach(auth()->id());
 
         return redirect()->route('events.show', $event);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Event $event)
+    public function show($id)
     {
-        $event = Event::whereId($event->id)->with(['creator', 'level', 'type', 'respondees'])->withCount('respondees')->firstOrFail();
+        $event = Event::with(['level', 'type', 'respondees', 'invitees', 'interestedUsers'])->withCount(['invitees', 'respondees'])->findOrFail($id);
         return view('events.show', compact('event'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Event $event)
     {
-        // dd($event);
-        return view('events.edit', ['event' => $event]);
+        if (Auth::user()->isSuperAdmin() || Auth::id() === $event->creator_id) {
+            return view('events.edit', ['event' => $event]);
+        }
+        return back();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
-     */
     public function update(EventRequest $request, Event $event)
     {
         $event->update($request->validated());
-        return redirect()->route('events.show', $event);
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Event $event)
-    {
-        //
+        foreach ($event->respondees as $respondee) {
+            Mail::to($respondee->email)
+                ->send(new EventUpdatedMailable($event));
+        }
+
+        return redirect()->route('events.show', $event);
     }
 }

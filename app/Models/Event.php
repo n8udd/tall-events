@@ -14,6 +14,8 @@ class Event extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const SEED_COUNT = 50;
+
     protected $dates = [
         'start_date',
         'end_date',
@@ -22,6 +24,18 @@ class Event extends Model
     ];
 
     protected $guarded = [];
+
+    public function interestedUsers()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            Interest::class,
+            'type_id',
+            'id',
+            'type_id',
+            'user_id'
+        );
+    }
 
     public function level()
     {
@@ -35,17 +49,24 @@ class Event extends Model
 
     public function respondees()
     {
-        return $this->belongsToMany(User::class, 'event_user', 'event_id', 'user_id');
+        return $this->belongsToMany(User::class, 'event_user', 'event_id', 'user_id')->withPivot('is_host');
     }
 
-    public function hosts()
+    public function invitees()
     {
-        return $this->respondees()->where('is_host', true);
+        return $this->belongsToMany(User::class, 'invites', 'event_id', 'to_user_id',)->withPivot(['accepted_on', 'declined_on'])->withTimestamps();
     }
 
-    public function attendees()
+    public function scopeHosts($query)
     {
-        return $this->respondees()->where('attended', true);
+        // return $this->respondees()->where('is_host', true);
+        return $query->where('is_host', true);
+    }
+
+    public function schopeAttended($query)
+    {
+        // return $this->respondees()->where('attended', true);
+        return $query->where('attended', true);
     }
 
     public function creator()

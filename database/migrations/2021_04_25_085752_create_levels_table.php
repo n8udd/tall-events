@@ -18,7 +18,8 @@ class CreateLevelsTable extends Migration
             $table->string('name');
             $table->string('color');
             $table->string('description');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

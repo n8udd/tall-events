@@ -18,7 +18,7 @@ class TypeSeeder extends Seeder
         $types = $this->types();
 
         foreach ($types as $name) {
-            DB::table('types')->insert([
+            Type::firstOrCreate([
                 "name" => $name,
             ]);
         }

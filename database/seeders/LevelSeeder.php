@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Level;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class LevelSeeder extends Seeder
         $levels = $this->levels();
 
         foreach ($levels as $key => $value) {
-            DB::table('levels')->insert([
+            Level::firstOrCreate([
                 "name" => $key,
                 "color" => $value,
                 "description" => $key . " is...",
@@ -28,10 +29,9 @@ class LevelSeeder extends Seeder
     private function levels(): array
     {
         return [
-            'easy' => 'green',
+            'beginner' => 'green',
             'intermediate' => 'yellow',
-            'hard' => 'red',
-            // 'social' => 'blue',
+            'advanced' => 'red',
         ];
     }
 }
