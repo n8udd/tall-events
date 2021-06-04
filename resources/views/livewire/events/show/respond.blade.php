@@ -6,11 +6,7 @@
     disabled
     @endif
     --}} 
-    <button class="flex bg-red-600 px-3 py-2 text-red-200 hover:bg-red-200 hover:text-red-600 disabled:hover:bg-green-300 disabled:opacity-50" disabled>test</button>
-    <button 
-    disabled
-    class="flex bg-red-600 px-3 py-2 text-red-200 hover:bg-red-200 hover:text-red-600 disabled:hover:bg-green-300" 
-    wire:click.prevent="toggleResponse({{ auth()->id() }})" ">
+    <button disabled class="flex bg-red-600 px-3 py-2 text-red-200 hover:bg-red-200 hover:text-red-600 disabled:hover:bg-green-300" wire:click.prevent="toggleResponse({{ auth()->id() }})">
 
     @if($this->response)
 
